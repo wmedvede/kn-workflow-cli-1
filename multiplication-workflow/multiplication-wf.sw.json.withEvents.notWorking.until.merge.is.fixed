@@ -1,0 +1,69 @@
+{
+  "id": "multiplication-wf",
+  "specVersion": "0.8",
+  "name": "Multiplication Workflow",
+  "version": "1.0.0",
+  "start": "ExecuteMultiplication",
+  "functions": [
+    {
+      "name": "callMultiplication",
+      "operation": "specs/multiplication-service.yaml#multiply"
+    },
+    {
+      "name": "systemOut",
+      "type": "custom",
+      "operation": "sysout"
+    }
+  ],
+  "events": [
+    {
+      "name": "multiplicationResultEvent",
+      "source": "multiplication-wf",
+      "type": "multiplication.result",
+      "kind": "produced"
+    }
+  ],
+  "states": [
+    {
+      "name": "ExecuteMultiplication",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "doMultiplication",
+          "functionRef": {
+            "refName": "callMultiplication",
+            "arguments": {
+              "leftElement": ".a",
+              "rightElement": ".b"
+            }
+          }
+        }
+      ],
+      "transition": {
+        "nextState": "SayGoodBye",
+        "produceEvents": [
+          {
+            "eventRef": "multiplicationResultEvent",
+            "data": "{hello: \"World\"}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SayGoodBye",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "doSystemOut",
+          "functionRef": {
+            "refName": "systemOut",
+            "arguments": {
+              "message": "${\" Good by from, multiplication-wf: \" + $WORKFLOW.instanceId + \" .\"}"
+            }
+          }
+        }
+      ],
+      "end": true
+    }
+  ]
+}

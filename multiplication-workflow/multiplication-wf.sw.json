@@ -1,0 +1,32 @@
+{
+  "id": "multiplication-wf",
+  "specVersion": "0.8",
+  "name": "Multiplication Workflow",
+  "version": "1.0.0",
+  "start": "ExecuteMultiplication",
+  "functions": [
+    {
+      "name": "callMultiplication",
+      "operation": "specs/multiplication-service.yaml#multiply"
+    }
+  ],
+  "states": [
+    {
+      "name": "ExecuteMultiplication",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "doMultiplication",
+          "functionRef": {
+            "refName": "callMultiplication",
+            "arguments": {
+              "leftElement": ".a",
+              "rightElement": ".b"
+            }
+          }
+        }
+      ],
+      "end": true
+    }
+  ]
+}
